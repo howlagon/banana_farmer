@@ -1,7 +1,7 @@
 import re
 
 from src.bloons.game import find_current_version
-import src.bloons.logger as logger
+import src.logger as logger
 
 minor_version = '39.2'
 major_version = minor_version[:minor_version.rfind('.')]

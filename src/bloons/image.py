@@ -45,7 +45,6 @@ def find_many_images(image_paths: list, original_image: None | Image = None, con
         return index
     return -1
     
-
 def find_image(image_path: str, original_image: None | Image = None, confidence: float = 0.9) -> list | None:
     if original_image is None:
         original_image = pyscreeze.screenshot()
@@ -55,6 +54,17 @@ def find_image(image_path: str, original_image: None | Image = None, confidence:
         return None
     return located_image
 
+def get_pixel(image: Image, position: tuple[int, int]) -> tuple[int, int, int]:
+    """Gets the pixel at a certain position in an image
+
+    Args:
+        image (Image)
+        position (tuple[int, int])
+
+    Returns:
+        tuple[int, int, int]: (r, g, b)
+    """
+    return image.getpixel(position)
 
 def screenshot(bounds: list[int, int, int, int] = [0, 0, 1920, 1080]) -> Image:
     screenshot = pyscreeze.screenshot(region=tuple(bounds))

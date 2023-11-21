@@ -2,10 +2,8 @@ import pyautogui
 from time import sleep
 
 import src.bloons.data as data
-from .game import find_current_screen
-
-def block() -> None:
-    sleep(0.5)
+from src.bloons.game import find_current_screen
+from src.utils import block
 
 def _click(x: int, y: int, button: str = "left", duration: float = 0.1) -> None:
     pyautogui.click(x, y, button=button, duration=duration)
@@ -43,8 +41,18 @@ def navigate_home(screen: str | None = None) -> None:
         _click(80, 215)
     block()
 
+def navigate_to_settings() -> None:
+    assert find_current_screen() == 'home_screen'
+    _click(80, 215)
+    block()
+
+def navigate_to_map_picker() -> None:
+    assert find_current_screen() == 'home_screen'
+    _click(840, 940)
+    block()
+
 def navigate_to_map(map_name: str) -> None:
-    if find_current_screen() != 'map_picker': navigate_home()
+    if find_current_screen() != 'map_picker': navigate_to_map_picker()
     map_name = map_name.upper()
     if map_name not in data.maps:
         raise ValueError(f"Invalid map name: {map_name}")
@@ -57,13 +65,34 @@ def navigate_to_map(map_name: str) -> None:
     click_map_difficulty(data.get_map_difficulty(map_data[0]))
     for _ in range(map_data[0] - data.map_pages[data.get_map_difficulty(map_data[0])]):
         navigate_map_picker('right')
-
-def navigate_to_settings() -> None:
-    assert find_current_screen() == 'home_screen'
-    _click(80, 215)
+    match map_data[1]:
+        case 0: _click(540, 265)
+        case 1: _click(965, 265)
+        case 2: _click(1390, 265)
+        case 3: _click(540, 580)
+        case 4: _click(965, 580)
+        case 5: _click(1390, 580)
     block()
 
-def navigate_to_map_picker() -> None:
-    assert find_current_screen() == 'home_screen'
-    _click(840, 940)
+def select_difficulty(difficulty: str) -> None:
+    assert find_current_screen() == 'difficulty_picker'
+    match difficulty.upper():
+        case 'EASY': _click(635, 405)
+        case 'MEDIUM': _click(965, 405)
+        case 'HARD': _click(1295, 405)
     block()
+
+def select_map_mode(difficulty: str, mode: str) -> None:
+    select_difficulty(difficulty)
+    assert find_current_screen() == 'map_mode_picker'
+    match difficulty.upper():
+        case 'EASY':
+            match mode.upper():
+                case 'STANDARD': _click(640, 595)
+                case 'PRIMARY ONLY': _click(960, 455)
+                case 'DEFLATION': _click(1285, 455)
+                case 'SANDBOX': _click(960, 740)
+
+def select_map(map: str, difficulty: str, mode: str) -> None:
+    navigate_to_map(map)
+    select_map_mode(difficulty, mode)
