@@ -9,7 +9,8 @@ from PIL.Image import Image
 def ocr(image: Image = None, bounds: list[int, int, int, int] = [0, 0, 1920, 1080], save: bool = False, threshold: tuple = (0, 255), invert: bool = False) -> str:
     assert image or bounds, "Either image or bounds must be provided."
     if image is None:
-        image = pyscreeze.screenshot(region=tuple(bounds))
+        assert len(bounds) == 4, "Bounds must be a list of 4 integers."
+        image = screenshot(bounds=tuple(bounds))
     if save:
         image.save(f"debug/preprocess-{time()}.png")
     array = np.array(image, dtype=np.uint8)

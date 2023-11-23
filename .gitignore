@@ -1,2 +1,4 @@
 debug/
 __pycache__/
+stats.json
+config.json

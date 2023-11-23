@@ -2,9 +2,10 @@ import mouse
 from time import sleep
 
 import src.bloons.data as data
-from src.bloons.game import find_current_screen
-from src.utils import block
 import src.bloons.image as image
+from src.bloons.game import find_current_screen
+import src.logger as logger
+from src.utils import block
 
 def _click(x: int, y: int, button: str = "left", duration: float = 0.15) -> None:
     mouse.move(x, y, duration=0.1)
@@ -76,7 +77,9 @@ def navigate_to_map(map_name: str) -> None:
     block()
 
 def select_difficulty(difficulty: str) -> None:
-    assert find_current_screen() == 'difficulty_picker'
+    screen = find_current_screen()
+    if screen != 'difficulty_picker':
+        logger.warn(f'Current screen may not be difficulty picker! Found: {screen}')
     match difficulty.upper():
         case 'EASY': _click(635, 405)
         case 'MEDIUM': _click(965, 405)
@@ -85,7 +88,9 @@ def select_difficulty(difficulty: str) -> None:
 
 def select_map_mode(difficulty: str, mode: str) -> None:
     select_difficulty(difficulty)
-    assert find_current_screen() == 'map_mode_picker'
+    screen = find_current_screen()
+    if screen != 'map_mode_picker':
+        logger.warn(f'Current screen may not be mode picker! Found: {screen}')
     match difficulty.upper():
         case 'EASY':
             match mode.upper():
@@ -93,6 +98,8 @@ def select_map_mode(difficulty: str, mode: str) -> None:
                 case 'PRIMARY ONLY': _click(960, 455)
                 case 'DEFLATION': _click(1285, 455)
                 case 'SANDBOX': _click(960, 740)
+        case _:
+            raise NotImplementedError(f"Difficulty {difficulty} not implemented yet!")
 
 def select_map(map: str, difficulty: str, mode: str) -> None:
     navigate_to_map(map)

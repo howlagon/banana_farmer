@@ -9,7 +9,7 @@ from src.bloons.keyboard import press_key
 
 current_version = None
 
-def find_current_screen():
+def find_current_screen() -> str | None:
     screenshot = image.screenshot()
     images = [
         'assets/screens/home_screen.png',
@@ -35,7 +35,7 @@ def find_current_screen():
         case 8: return 'map_mode_picker'
         case 9: return 'pause_menu'
         case -1:
-            return ''
+            return None
 
 from src.bloons.mouse import navigate_home, navigate_to_settings, _click
 

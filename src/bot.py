@@ -1,10 +1,12 @@
 try: import ujson as json
 except ImportError: import json
 import traceback
+import multiprocessing
+from time import time
 
-from src.bloons import Towers, tower, select_map, find_current_round, find_current_screen, start_game, press_key
+from src.bloons import Towers, select_map, find_current_round, find_current_screen, start_game, press_key
 from src.utils import block
-from src.bloons.image import find_image, find_many_images
+from src.bloons.image import find_image, find_many_images, ocr
 from src.bloons.mouse import _click
 import src.bloons.data as data
 import src.logger as logger
@@ -27,9 +29,6 @@ def parse_move(move: dict):
             towers.change_target(move['LOCATION'], move['TARGET'])
 
 def restart_from_victory_screen() -> None:
-    x, y, _, _ = find_image('assets/next.png')
-    _click(x, y)
-    block()
     _click(1195, 850)
     block(1)
     _click(960, 760)
@@ -48,10 +47,25 @@ images = [
                 'assets/screens/monkey_knowledge.png',
             ]
 
+stats = {
+    'monkey_money_earned': 0,
+    'total_time': 0,
+    'games_completed': 0,
+    'round_time': []
+}
+
+def find_monkey_money_earned() -> int:
+    x, y, w, h = find_image('assets/monkey_money_earned.png')
+    bounds = [x, y + h + 3, w, 50]
+    bounds = [i.item() if not isinstance(i, int) else i for i in bounds] # assume numpy.int64, because it can do that for some fucking reason 
+    text = int(ocr(bounds=bounds, threshold=(220, 255), invert=True).replace(' ', '').replace('\n', ''))
+    return text
+
 class Bot:
-    def __init__(self, folder: str, restart: bool = False) -> None:
+    def __init__(self, folder: str, restart: bool = False, queue = None) -> None:
         self.restart = restart
-        self.earned_monkey_money = 0
+        self.stats = stats
+        self.queue = queue
         with open(f'{folder}/setup.json', 'r') as fp:
             self.data: dict = json.load(fp)
         with open(f'{folder}/instructions.json', 'r') as fp:
@@ -98,7 +112,17 @@ class Bot:
         global towers
         self.setup()
         while True:
+            start_time = time()
             r = self.gameloop()
+            end_time = time()
+            x, y, _, _ = find_image('assets/next.png')
+            _click(x, y)
+            block()
+            self.stats['total_time'] += end_time - start_time
+            self.stats['games_completed'] += 1
+            self.stats['round_time'].append(end_time - start_time)
+            self.stats['monkey_money_earned'] += find_monkey_money_earned()
+            if self.queue is not None: self.queue.put(self.stats)
             if r == 0 and self.restart:
                 restart_from_victory_screen()
                 towers = Towers()

@@ -4,7 +4,7 @@ import colorama
 from time import strftime
 
 initalized = False
-debug_mode = False
+debug_mode = json.load(open('config.json'))['debug']
 
 colorama.init()
 
