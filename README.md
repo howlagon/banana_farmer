@@ -11,15 +11,15 @@ A simple macro program for Bloons TD6, because [btd6farmer](https://github.com/l
 Just, don't look at the source code. **Please.**
 
 ## Table of contents
-- Requirements
-- Installation Guide
-- Usage
-  - Arguments
-- Making a macro
-  - Prerequisites
-  - setup.json
-  - instructions.json
-- Instruction Reference
+- [Requirements](https://github.com/howlagon/banana_farmer/#requirements)
+- [Installation Guide](https://github.com/howlagon/banana_farmer#installation-guide)
+- [Usage](https://github.com/howlagon/banana_farmer#usage)
+  - [Arguments](https://github.com/howlagon/banana_farmer#arguments)
+- [Making a macro](https://github.com/howlagon/banana_farmer#making-a-macro)
+  - [Prerequisites](https://github.com/howlagon/banana_farmer#prerequisites)
+  - [setup.json](https://github.com/howlagon/banana_farmer#setupjson)
+  - [instructions.json](https://github.com/howlagon/banana_farmer#instructionsjson)
+- [Instruction Reference](https://github.com/howlagon/banana_farmer#instruction-reference)
 
 ## Requirements
 - Windows, sadly
