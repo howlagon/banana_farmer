@@ -16,6 +16,7 @@ if __name__ != '__main__' and __name__ != '__mp_main__':
 parser = argparse.ArgumentParser(description='A bot to run macros for Bloons TD6')
 parser.add_argument('--debug', action='store_true', help='Enable debug log mode')
 parser.add_argument('--restart', action='store_true', help='Restart the macro after every game', default=True)
+parser.add_argument('--hijack', action='store_true', help='Allow the program to "steal" control of your mouse', default=True)
 parser.add_argument('--path', type=str, help='Folder to load the macro from', required=True)
 args = parser.parse_args()
 
@@ -29,7 +30,7 @@ from src.bloons import is_game_focused
 import src.logger as logger
 
 def bot(queue: multiprocessing.Queue):
-    bot = Bot('macros/Infernal_Deflation', restart=args.restart, queue=queue)
+    bot = Bot('macros/Infernal_Deflation', restart=args.restart, queue=queue, hijack=args.hijack)
     if not is_game_focused():
         logger.info("Waiting for game to be focused... Please switch to the BloonsTD6 window.")
         while not is_game_focused():
@@ -78,7 +79,7 @@ def main():
     data['total_time'] += current_stats['total_time']
     data['games_completed'] += current_stats['games_completed'] + 1
     try:
-        average_time = (data['total_time'] + current_stats['average_time'] if current_stats['average_time'] != 0 else 0) / data['games_completed']
+        average_time = (data['total_time'] + (current_stats['average_time'] if current_stats['average_time'] != 0 else 0)) / data['games_completed']
     except ZeroDivisionError:
         average_time = 0
 

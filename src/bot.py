@@ -4,8 +4,8 @@ import traceback
 import multiprocessing
 from time import time
 
-from src.bloons import Towers, select_map, find_current_round, find_current_screen, start_game, press_key
-from src.utils import block
+from src.bloons import Towers, select_map, find_current_round, find_current_screen, start_game, press_key, is_game_focused
+from src.utils import block, strftime
 from src.bloons.image import find_image, find_many_images, ocr
 from src.bloons.mouse import _click
 import src.bloons.data as data
@@ -62,10 +62,12 @@ def find_monkey_money_earned() -> int:
     return text
 
 class Bot:
-    def __init__(self, folder: str, restart: bool = False, queue = None) -> None:
+    def __init__(self, folder: str, restart: bool = False, queue = None, hijack: bool = True) -> None:
         self.restart = restart
         self.stats = stats
         self.queue = queue
+        self.hijack = hijack
+        self.global_start_time = time()
         with open(f'{folder}/setup.json', 'r') as fp:
             self.data: dict = json.load(fp)
         with open(f'{folder}/instructions.json', 'r') as fp:
@@ -82,6 +84,7 @@ class Bot:
             block(0.25)
     def _block_until_next_round_or_victory(self, current_round: int) -> None | int:
         while True:
+            logger.info(f"Time elapsed: {strftime(time() - self.global_start_time)} | Games completed: {self.stats['games_completed']} | MM: {self.stats['monkey_money_earned']}", flush=True)
             round = find_current_round()
             if round is not None and round != current_round:
                 break
@@ -104,6 +107,7 @@ class Bot:
     def gameloop(self) -> int | None:
         while True:
             try:
+                logger.info(f"Time elapsed: {strftime(time() - self.global_start_time)} | Games completed: {self.stats['games_completed']} | {self.stats['monkey_money_earned']} MM", flush=True)
                 r = self._parse_round()
                 if r == 0:
                     return 0
@@ -125,6 +129,9 @@ class Bot:
             self.stats['monkey_money_earned'] += find_monkey_money_earned()
             if self.queue is not None: self.queue.put(self.stats)
             if r == 0 and self.restart:
+                if not self.hijack:
+                    logger.info("Waiting for game to be focused... Please switch to the BloonsTD6 window.")
+                    while not is_game_focused(): pass
                 restart_from_victory_screen()
                 towers = Towers()
             else: break

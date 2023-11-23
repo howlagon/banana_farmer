@@ -48,6 +48,7 @@ options:
   -h, --help   show this help message and exit
   --debug      Enable debug log mode
   --restart    Restart the macro after every game
+  --hijack     Allow the program to "steal" control of your mouse
   --path PATH  Folder to load the macro from
 ```
 

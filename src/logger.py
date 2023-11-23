@@ -10,23 +10,25 @@ colorama.init()
 
 def log(level: int, message: str, flush: bool = False) -> None:
     if flush:
-        suffix = f"\x1b[2K\r"
+        prefix = '\x1b[2K'
+        suffix = f"\r"
     else:
+        prefix = ''
         suffix = "\n"
     if level == -1 and debug_mode:
-        print(f"{colorama.Fore.CYAN}{strftime('%H:%M:%S')} | [DEBUG] {message}{colorama.Style.RESET_ALL}", end=suffix)
+        print(f"{prefix}{colorama.Fore.CYAN}{strftime('%H:%M:%S')} | [DEBUG] {message}{colorama.Style.RESET_ALL}", end=suffix)
     elif level == -1 and not debug_mode:
         return
     elif level == 0:
-        print(f"{colorama.Fore.WHITE}{strftime('%H:%M:%S')} | [INFO] {message}{colorama.Style.RESET_ALL}", end=suffix)
+        print(f"{prefix}{colorama.Fore.WHITE}{strftime('%H:%M:%S')} | [INFO] {message}{colorama.Style.RESET_ALL}", end=suffix)
     elif level == 1:
-        print(f"{colorama.Fore.YELLOW}{strftime('%H:%M:%S')} | [WARN] {message}{colorama.Style.RESET_ALL}", end=suffix)
+        print(f"{prefix}{colorama.Fore.YELLOW}{strftime('%H:%M:%S')} | [WARN] {message}{colorama.Style.RESET_ALL}", end=suffix)
     elif level == 2:
-        print(f"{colorama.Fore.RED}{strftime('%H:%M:%S')} | [ERROR] {message}{colorama.Style.RESET_ALL}", end=suffix)
+        print(f"{prefix}{colorama.Fore.RED}{strftime('%H:%M:%S')} | [ERROR] {message}{colorama.Style.RESET_ALL}", end=suffix)
     elif level == 3:
-        print(f"{colorama.Fore.RED}{strftime('%H:%M:%S')} | [CRITICAL] {message}{colorama.Style.RESET_ALL}", end=suffix)
+        print(f"{prefix}{colorama.Fore.RED}{strftime('%H:%M:%S')} | [CRITICAL] {message}{colorama.Style.RESET_ALL}", end=suffix)
     else:
-        print(f"{colorama.Fore.RED}{strftime('%H:%M:%S')} | [UNKNOWN] {message}{colorama.Style.RESET_ALL}", end=suffix)
+        print(f"{prefix}{colorama.Fore.RED}{strftime('%H:%M:%S')} | [UNKNOWN] {message}{colorama.Style.RESET_ALL}", end=suffix)
 
 def debug(message: str, flush: bool = False) -> None:
     log(-1, message, flush)

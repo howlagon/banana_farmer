@@ -105,7 +105,7 @@ def select_map_mode(difficulty: str, mode: str) -> None:
 def select_map(map: str, difficulty: str, mode: str) -> None:
     navigate_to_map(map)
     select_map_mode(difficulty, mode)
-    block()
+    block(0.75)
     if image.find_image(image_path='assets/screens/overwrite_save.png') is not None:
         _click(1140, 730)
     block()
