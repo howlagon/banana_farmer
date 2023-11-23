@@ -1,0 +1,25 @@
+{
+    "31": [
+        {
+            "INSTRUCTION": "PLACE_TOWER",
+            "MONKEY": "SNIPER",
+            "LOCATION": [1600, 470],
+            "UPGRADE_PATH": [0, 2, 4]
+        },
+        {
+            "INSTRUCTION": "PLACE_TOWER",
+            "MONKEY": "ALCHEMIST",
+            "LOCATION": [1545, 500],
+            "UPGRADE_PATH": [4, 0, 2]
+        },
+        {
+            "INSTRUCTION": "PLACE_TOWER",
+            "MONKEY": "VILLAGE",
+            "LOCATION": [1580, 580],
+            "UPGRADE_PATH": [2, 0, 0]
+        },
+        {
+            "INSTRUCTION": "START"
+        }
+    ]
+}

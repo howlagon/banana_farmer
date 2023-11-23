@@ -1,13 +1,28 @@
-from src.bloons import is_game_focused, find_current_screen, select_map, toggle_autostart, start_game
-from src.bloons.monkey import place_monkey, upgrade_monkey
+from src.bot import Bot
+from src.bloons import is_game_focused
+import src.logger as logger
 
-while not is_game_focused():
-    pass
-if find_current_screen() != 'in_game': 
-    select_map('monkey meadow', 'easy', 'standard')
-while not find_current_screen() == 'in_game':
-    pass
-toggle_autostart(True)
-place_monkey('DART', (619, 494))
-upgrade_monkey((619, 494), [0, 2, 2])
-start_game()
+import mouse
+import multiprocessing
+from time import sleep
+
+def main():
+    bot = Bot('macros/Infernal_Deflation', restart=True)
+    if not is_game_focused():
+        logger.info("Waiting for game to be focused...")
+        while not is_game_focused():
+            pass
+    bot.start()
+
+if __name__ == '__main__':
+    bot_thread = multiprocessing.Process(target=main, args=(), daemon=True)
+    bot_thread.start()
+    try:
+        while mouse.get_position() != (0,0) and bot_thread.is_alive():
+            sleep(0.1)
+        if bot_thread.is_alive():
+            logger.error("Failsafe triggered!")
+            raise KeyboardInterrupt
+    except KeyboardInterrupt:
+        logger.info("Exiting...")
+        bot_thread.terminate()

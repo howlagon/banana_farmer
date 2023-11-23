@@ -1,15 +1,12 @@
+try: import ujson as json
+except ImportError: import json
 import colorama
 from time import strftime
 
 initalized = False
 debug_mode = False
 
-def init(debug = False) -> None:
-    global initalized, debug_mode
-    colorama.init()
-    initalized = True
-    debug_mode = debug
-
+colorama.init()
 
 def log(level: int, message: str, flush: bool = False) -> None:
     if flush:
@@ -18,7 +15,9 @@ def log(level: int, message: str, flush: bool = False) -> None:
         suffix = "\n"
     if level == -1 and debug_mode:
         print(f"{colorama.Fore.CYAN}{strftime('%H:%M:%S')} | [DEBUG] {message}{colorama.Style.RESET_ALL}", end=suffix)
-    if level == 0:
+    elif level == -1 and not debug_mode:
+        return
+    elif level == 0:
         print(f"{colorama.Fore.WHITE}{strftime('%H:%M:%S')} | [INFO] {message}{colorama.Style.RESET_ALL}", end=suffix)
     elif level == 1:
         print(f"{colorama.Fore.YELLOW}{strftime('%H:%M:%S')} | [WARN] {message}{colorama.Style.RESET_ALL}", end=suffix)

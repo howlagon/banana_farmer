@@ -15,19 +15,25 @@ def find_current_screen():
         'assets/screens/home_screen.png',
         'assets/screens/map_picker.png',
         'assets/screens/settings.png',
+        'assets/screens/restart.png',
+        'assets/screens/level_up.png',
+        'assets/screens/monkey_knowledge.png',
         'assets/screens/in_game.png',
         'assets/screens/difficulty_picker.png',
         'assets/screens/map_mode_picker.png',
-        'assets/screens/pause_menu.png'
+        'assets/screens/pause_menu.png',
     ]
     match image.find_many_images(images, screenshot):
         case 0: return 'home_screen'
         case 1: return 'map_picker'
         case 2: return 'settings'
-        case 3: return 'in_game'
-        case 4: return 'difficulty_picker'
-        case 5: return 'map_mode_picker'
-        case 6: return 'pause_menu'
+        case 3: return 'restart'
+        case 4: return 'level_up'
+        case 5: return 'monkey_knowledge'
+        case 6: return 'in_game'
+        case 7: return 'difficulty_picker'
+        case 8: return 'map_mode_picker'
+        case 9: return 'pause_menu'
         case -1:
             return ''
 
@@ -73,11 +79,13 @@ def find_current_round() -> int | None:
         logger.error("Not in game!")
         return None
     screenshot = image.screenshot(bounds=[1400, 30, 160, 40])
-    text = image.ocr(screenshot, threshold=(250, 255), invert = True)
+    text = image.ocr(screenshot, threshold=(250, 255), invert = True).replace("\n", '\\n')
     match = re.search(r'([0-9]+)', text)
     if match is not None:
+        if not match.group(1).isdigit(): return None
         return int(match.group(1))
-    logger.error(f"Could not find round! Found: \"{text}\"")
+    if text != 'rs\\n': # gray overlay, likely a popup window
+        logger.error(f"Could not find round! Found: \"{text}\"")
     return None
 
 def is_game_focused() -> bool:

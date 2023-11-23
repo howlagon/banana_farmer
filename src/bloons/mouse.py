@@ -1,12 +1,16 @@
-import pyautogui
+import mouse
 from time import sleep
 
 import src.bloons.data as data
 from src.bloons.game import find_current_screen
 from src.utils import block
+import src.bloons.image as image
 
-def _click(x: int, y: int, button: str = "left", duration: float = 0.1) -> None:
-    pyautogui.click(x, y, button=button, duration=duration)
+def _click(x: int, y: int, button: str = "left", duration: float = 0.15) -> None:
+    mouse.move(x, y, duration=0.1)
+    mouse.press(button=button)
+    sleep(duration)
+    mouse.release(button=button)
 
 def click_map_difficulty(difficulty: str) -> None:
     match difficulty.upper():
@@ -20,9 +24,6 @@ def click_map_difficulty(difficulty: str) -> None:
             _click(1340, 980)
         case _:
             raise ValueError(f"Invalid difficulty: {difficulty}")
-
-def click_map():
-    pass
 
 def navigate_map_picker(direction: str) -> None:
     match direction:
@@ -96,3 +97,7 @@ def select_map_mode(difficulty: str, mode: str) -> None:
 def select_map(map: str, difficulty: str, mode: str) -> None:
     navigate_to_map(map)
     select_map_mode(difficulty, mode)
+    block()
+    if image.find_image(image_path='assets/screens/overwrite_save.png') is not None:
+        _click(1140, 730)
+    block()
