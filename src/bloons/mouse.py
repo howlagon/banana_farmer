@@ -49,7 +49,8 @@ def navigate_to_settings() -> None:
     block()
 
 def navigate_to_map_picker() -> None:
-    assert find_current_screen() == 'home_screen'
+    screen = find_current_screen()
+    if screen != 'home_screen': navigate_home(screen)
     _click(840, 940)
     block()
 

@@ -15,8 +15,8 @@ if __name__ != '__main__' and __name__ != '__mp_main__':
 
 parser = argparse.ArgumentParser(description='A bot to run macros for Bloons TD6')
 parser.add_argument('--debug', action='store_true', help='Enable debug log mode')
-parser.add_argument('--path', type=str, help='Folder to load the macro from', required=True)
 parser.add_argument('--restart', action='store_true', help='Restart the macro after every game', default=True)
+parser.add_argument('--path', type=str, help='Folder to load the macro from', required=True)
 args = parser.parse_args()
 
 json.dump({
@@ -69,19 +69,24 @@ def main():
         bot_thread.terminate()
     for i in iter(queue.get, None):
         result.append(i)
+    if len(result) == 0:
+        return
     data = result[-1]
 
     current_stats = json.load(open('stats.json', 'r'))
     data['monkey_money_earned'] += current_stats['monkey_money_earned']
     data['total_time'] += current_stats['total_time']
     data['games_completed'] += current_stats['games_completed'] + 1
-    data['round_time'] += current_stats['average_time']
+    try:
+        average_time = (data['total_time'] + current_stats['average_time'] if current_stats['average_time'] != 0 else 0) / data['games_completed']
+    except ZeroDivisionError:
+        average_time = 0
 
     stats = {
         'monkey_money_earned': data['monkey_money_earned'],
         'total_time': data['total_time'],
         'games_completed': data['games_completed'],
-        'average_time': data['total_time'] / data['games_completed'],
+        'average_time': average_time
     }
     json.dump(stats, open('stats.json', 'w'), indent=4)
     logger.info("Saved stats to stats.json")
@@ -90,30 +95,30 @@ if __name__ == "__main__": # because __mp_main__ is a fucking bitch
     width = get_terminal_size().columns
     if width >= 126:
         print("""
-    /$$$$$$$                                                         /$$$$$$$$                                                  
-    | $$__  $$                                                       | $$_____/                                                  
-    | $$  \ $$ /$$$$$$  /$$$$$$$   /$$$$$$  /$$$$$$$   /$$$$$$       | $$    /$$$$$$   /$$$$$$  /$$$$$$/$$$$   /$$$$$$   /$$$$$$ 
-    | $$$$$$$ |____  $$| $$__  $$ |____  $$| $$__  $$ |____  $$      | $$$$$|____  $$ /$$__  $$| $$_  $$_  $$ /$$__  $$ /$$__  $$
-    | $$__  $$ /$$$$$$$| $$  \ $$  /$$$$$$$| $$  \ $$  /$$$$$$$      | $$__/ /$$$$$$$| $$  \__/| $$ \ $$ \ $$| $$$$$$$$| $$  \__/
-    | $$  \ $$/$$__  $$| $$  | $$ /$$__  $$| $$  | $$ /$$__  $$      | $$   /$$__  $$| $$      | $$ | $$ | $$| $$_____/| $$      
-    | $$$$$$$/  $$$$$$$| $$  | $$|  $$$$$$$| $$  | $$|  $$$$$$$      | $$  |  $$$$$$$| $$      | $$ | $$ | $$|  $$$$$$$| $$      
-    |_______/ \_______/|__/  |__/ \_______/|__/  |__/ \_______/      |__/   \_______/|__/      |__/ |__/ |__/ \_______/|__/      
+ /$$$$$$$                                                         /$$$$$$$$                                                  
+| $$__  $$                                                       | $$_____/                                                  
+| $$  \ $$ /$$$$$$  /$$$$$$$   /$$$$$$  /$$$$$$$   /$$$$$$       | $$    /$$$$$$   /$$$$$$  /$$$$$$/$$$$   /$$$$$$   /$$$$$$ 
+| $$$$$$$ |____  $$| $$__  $$ |____  $$| $$__  $$ |____  $$      | $$$$$|____  $$ /$$__  $$| $$_  $$_  $$ /$$__  $$ /$$__  $$
+| $$__  $$ /$$$$$$$| $$  \ $$  /$$$$$$$| $$  \ $$  /$$$$$$$      | $$__/ /$$$$$$$| $$  \__/| $$ \ $$ \ $$| $$$$$$$$| $$  \__/
+| $$  \ $$/$$__  $$| $$  | $$ /$$__  $$| $$  | $$ /$$__  $$      | $$   /$$__  $$| $$      | $$ | $$ | $$| $$_____/| $$      
+| $$$$$$$/  $$$$$$$| $$  | $$|  $$$$$$$| $$  | $$|  $$$$$$$      | $$  |  $$$$$$$| $$      | $$ | $$ | $$|  $$$$$$$| $$      
+|_______/ \_______/|__/  |__/ \_______/|__/  |__/ \_______/      |__/   \_______/|__/      |__/ |__/ |__/ \_______/|__/      
     """.lstrip('\n'))
     elif width >= 75:
         print("""
-    ____                                  ______                             
-    |  _ \                                |  ____|                            
-    | |_) | __ _ _ __   __ _ _ __   __ _  | |__ __ _ _ __ _ __ ___   ___ _ __ 
-    |  _ < / _` | '_ \ / _` | '_ \ / _` | |  __/ _` | '__| '_ ` _ \ / _ \ '__|
-    | |_) | (_| | | | | (_| | | | | (_| | | | | (_| | |  | | | | | |  __/ |   
-    |____/ \__,_|_| |_|\__,_|_| |_|\__,_| |_|  \__,_|_|  |_| |_| |_|\___|_|   
+ ____                                  ______                             
+|  _ \                                |  ____|                            
+| |_) | __ _ _ __   __ _ _ __   __ _  | |__ __ _ _ __ _ __ ___   ___ _ __ 
+|  _ < / _` | '_ \ / _` | '_ \ / _` | |  __/ _` | '__| '_ ` _ \ / _ \ '__|
+| |_) | (_| | | | | (_| | | | | (_| | | | | (_| | |  | | | | | |  __/ |   
+|____/ \__,_|_| |_|\__,_|_| |_|\__,_| |_|  \__,_|_|  |_| |_| |_|\___|_|   
     """.lstrip('\n'))
     elif width >= 60:
         print("""
-    ___                             ___                       
-    | _ ) __ _ _ _  __ _ _ _  __ _  | __|_ _ _ _ _ __  ___ _ _ 
-    | _ \/ _` | ' \/ _` | ' \/ _` | | _/ _` | '_| '  \/ -_) '_|
-    |___/\__,_|_||_\__,_|_||_\__,_| |_|\__,_|_| |_|_|_\___|_|  """.lstrip('\n'))
+ ___                             ___                       
+| _ ) __ _ _ _  __ _ _ _  __ _  | __|_ _ _ _ _ __  ___ _ _ 
+| _ \/ _` | ' \/ _` | ' \/ _` | | _/ _` | '_| '  \/ -_) '_|
+|___/\__,_|_||_\__,_|_||_\__,_| |_|\__,_|_| |_|_|_\___|_|  """.lstrip('\n'))
     else:
         print("Banana Farmer")
         print("Wow your terminal is small! Everyone bully the guy with the small terminal!")

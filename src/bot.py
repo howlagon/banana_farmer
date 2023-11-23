@@ -51,7 +51,7 @@ stats = {
     'monkey_money_earned': 0,
     'total_time': 0,
     'games_completed': 0,
-    'round_time': []
+    'games_won': 0
 }
 
 def find_monkey_money_earned() -> int:
@@ -87,7 +87,9 @@ class Bot:
                 break
             img = find_many_images(images)
             match img:
-                case 0: return 0
+                case 0: 
+                    self.stats['games_won'] += 1
+                    return 0
                 case 1 | 2: _click(960, 540)
     def _parse_round(self) -> None | int:
         current_round = find_current_round()
@@ -120,7 +122,6 @@ class Bot:
             block()
             self.stats['total_time'] += end_time - start_time
             self.stats['games_completed'] += 1
-            self.stats['round_time'].append(end_time - start_time)
             self.stats['monkey_money_earned'] += find_monkey_money_earned()
             if self.queue is not None: self.queue.put(self.stats)
             if r == 0 and self.restart:
