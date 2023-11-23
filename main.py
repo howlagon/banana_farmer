@@ -77,9 +77,9 @@ def main():
     current_stats = json.load(open('stats.json', 'r'))
     data['monkey_money_earned'] += current_stats['monkey_money_earned']
     data['total_time'] += current_stats['total_time']
-    data['games_completed'] += current_stats['games_completed'] + 1
+    data['games_completed'] += current_stats['games_completed']
     try:
-        average_time = (data['total_time'] + (current_stats['average_time'] if current_stats['average_time'] != 0 else 0)) / data['games_completed']
+        average_time = (data['total_time'] + (current_stats['average_time'] if current_stats['average_time'] != 0 else 0)) / (data['games_completed'] + (1 if current_stats['average_time'] != 0 else 0))
     except ZeroDivisionError:
         average_time = 0
 

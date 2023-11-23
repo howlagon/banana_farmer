@@ -9,11 +9,10 @@ debug_mode = json.load(open('config.json'))['debug']
 colorama.init()
 
 def log(level: int, message: str, flush: bool = False) -> None:
+    prefix = '\x1b[2K'
     if flush:
-        prefix = '\x1b[2K'
         suffix = f"\r"
     else:
-        prefix = ''
         suffix = "\n"
     if level == -1 and debug_mode:
         print(f"{prefix}{colorama.Fore.CYAN}{strftime('%H:%M:%S')} | [DEBUG] {message}{colorama.Style.RESET_ALL}", end=suffix)
