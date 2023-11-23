@@ -27,8 +27,10 @@ Just, don't look at the source code. **Please.**
 - [Tesseract v5.0+](https://github.com/UB-Mannheim/tesseract/wiki)
 
 ## Installation guide
-It's as simple as 1, , !
+VENV optional.
 ```console
+$ git clone https://github.com/howlagon/banana_farmer
+$ cd banana_farmer
 $ python -m pip install -r requirements.txt
 ```
 
