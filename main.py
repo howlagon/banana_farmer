@@ -30,7 +30,7 @@ from src.bloons import is_game_focused
 import src.logger as logger
 
 def bot(queue: multiprocessing.Queue):
-    bot = Bot('macros/Infernal_Deflation', restart=args.restart, queue=queue, hijack=args.hijack)
+    bot = Bot(args.path, restart=args.restart, queue=queue, hijack=args.hijack)
     if not is_game_focused():
         logger.info("Waiting for game to be focused... Please switch to the BloonsTD6 window.")
         while not is_game_focused():
